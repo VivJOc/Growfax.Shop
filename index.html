@@ -1,203 +1,183 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Growtopia Role Store — Top Up via DANA (Trakteer)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  body{font-family:Inter,system-ui,Arial;background:#061226;color:#e6eef6;margin:0;padding:18px}
-  .container{max-width:1000px;margin:0 auto}
-  header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-  h1{margin:0;font-size:20px}
-  .muted{color:#9aa4b2;font-size:13px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-  .card{background:#071028;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-  .role-name{font-weight:700}
-  .price{font-weight:800;margin-top:8px}
-  .btn{display:inline-block;padding:8px 12px;border-radius:8px;background:#06b6d4;color:#021016;font-weight:700;border:none;cursor:pointer;text-decoration:none}
-  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#9aa4b2}
-  .form-row{display:flex;gap:8px;align-items:center;margin-top:10px}
-  input, select{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-  .small{font-size:13px;color:#9aa4b2}
-  .panel{background:#071228;padding:12px;border-radius:10px;margin-top:12px;border:1px solid rgba(255,255,255,0.03)}
-  .note{font-size:13px;color:#9aa4b2;margin-top:8px}
-  table{width:100%;border-collapse:collapse;margin-top:8px}
-  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.02);text-align:left}
-  footer{margin-top:18px;color:#9aa4b2;font-size:13px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GT Role Store</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background: #161b22;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #58a6ff;
+    }
+    main {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00000050;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      background: #0d1117;
+      color: white;
+      text-align: center;
+    }
+    button {
+      background: #238636;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+    .role-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .role {
+      background: #0d1117;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #30363d;
+    }
+    .role h3 {
+      margin: 0;
+      color: #58a6ff;
+    }
+    .dana-box {
+      background: #21262d;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    a {
+      color: #58a6ff;
+      text-decoration: none;
+    }
+    .small {
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div>
-      <h1>Growtopia Role Store</h1>
-      <div class="muted">Top up via DANA (automatis terdeteksi lewat Trakteer)</div>
+  <header>💎 Growfax Shop</header>
+  <main>
+    <p>Masukkan <b>GrowID</b> dan <b>GrowFax</b> kamu di bawah untuk membeli role.</p>
+
+    <input type="text" id="growid" placeholder="Masukkan GrowID kamu" />
+    <input type="text" id="growfax" placeholder="Masukkan GrowFax kamu" />
+    <br />
+    <button onclick="checkSaldo()">💰 Cek Saldo</button>
+    <p id="saldoDisplay" class="small"></p>
+
+    <div class="role-list" id="roleList"></div>
+
+    <div class="dana-box">
+      <b>Pembayaran via DANA</b><br>
+      Nomor DANA kamu: <span style="color:#58a6ff; font-weight:bold;">0895338912670</span><br>
+      Bayar lewat DANA sesuai nominal role.<br>
+      <small>(Trakteer otomatis membaca transaksi untuk update saldo)</small><br>
+      <a href="teer.id/vivj" target="_blank">
+        🔗 Buka Trakteer Top Up
+      </a>
     </div>
-    <div>
-      <div class="small">No DANA: <strong id="danaNumber">-</strong></div>
-      <div class="small">Trakteer: <a id="trakteerLink" href="#" style="color:#9ee7d1">Buka halaman Trakteer</a></div>
-    </div>
-  </header>
+  </main>
 
-  <section class="panel">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <div><strong>1.</strong> Isi GrowID & GrowFax untuk cek saldo / beli</div>
-      <div style="margin-left:auto"><button id="btnRefresh" class="btn ghost">Refresh Roles</button></div>
-    </div>
+  <script>
+    const roles = [
+      { key: "vip", name: "VIP", price: 8000 },
+      { key: "vip_plus", name: "VIP+", price: 20000 },
+      { key: "moderator", name: "Moderator", price: 36000 },
+      { key: "supermod", name: "Super Moderator", price: 60000 },
+      { key: "developer", name: "Developer", price: 88000 },
+      { key: "god", name: "God", price: 104000 },
+      { key: "god_max", name: "God [MAX]", price: 160000 }
+    ];
 
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      <input id="inputGrowID" placeholder="GrowID (contoh: player123)">
-      <input id="inputGrowFax" placeholder="GrowFax (contoh: 12345)">
-      <button id="btnCheck" class="btn">Cek Saldo</button>
-    </div>
+    const roleList = document.getElementById("roleList");
 
-    <div id="balancePanel" style="margin-top:10px;display:none">
-      <div class="small">Saldo untuk <span id="who"></span> : <strong id="balanceVal">0</strong></div>
-      <div style="margin-top:8px">
-        <button id="btnTopUp" class="btn">Top Up via DANA</button>
-        <span class="note">Klik "Top Up" lalu bayar ke nomor DANA. Pastikan saat membayar di Trakteer/komentar donasi tulis: <code>GROWID:yourid GROWFAX:yourfax</code>.</span>
-      </div>
-    </div>
-  </section>
-
-  <h3 style="margin-top:18px">Daftar Role</h3>
-  <div class="grid" id="rolesGrid"></div>
-
-  <div id="buyPanel" class="panel" style="display:none">
-    <h4>Beli Role</h4>
-    <div class="small">Memakai saldo yang terasosiasi dengan GrowID/GrowFax</div>
-    <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-      <select id="selectRole"></select>
-      <button id="btnBuy" class="btn">Beli Sekarang</button>
-    </div>
-    <div id="buyResult" style="margin-top:10px"></div>
-  </div>
-
-  <div style="margin-top:18px" class="panel">
-    <h4>Riwayat (terkini untuk akun yang dicari)</h4>
-    <div id="historyArea" class="small">Cek saldo untuk menampilkan riwayat topup & pembelian.</div>
-  </div>
-
-  <footer>
-    <div class="small">Instruksi Top Up: setelah bayar via DANA, pastikan kamu gunakan Trakteer sebagai alat/layanan agar transaksi ter-forward ke webhook kami. Saat mengisi pesan/komentar donasi tulis: <code>GROWID:yourid GROWFAX:yourfax</code>.</div>
-  </footer>
-</div>
-
-<script>
-  const rolesGrid = document.getElementById('rolesGrid');
-  const selectRole = document.getElementById('selectRole');
-  const danaNumberEl = document.getElementById('danaNumber');
-  const trakteerLinkEl = document.getElementById('trakteerLink');
-
-  let CURRENT_ACCOUNT = null; // {growid, growfax, balance}
-
-  async function fetchRoles(){
-    const res = await fetch('/api/roles');
-    const data = await res.json();
-    if(!data.ok) return console.error('Failed fetch roles', data);
-    const roles = data.roles;
-    danaNumberEl.textContent = data.dana_number || '-';
-    trakteerLinkEl.href = data.trakteer_page || '#';
-    trakteerLinkEl.textContent = data.trakteer_page ? 'Buka halaman Trakteer' : 'Trakteer belum diset';
-
-    rolesGrid.innerHTML = '';
-    selectRole.innerHTML = '';
-    roles.forEach(r=>{
-      const card = document.createElement('div'); card.className = 'card';
-      card.innerHTML = `<div class="role-name">${r.name}</div><div class="price">${r.price_perak.toLocaleString()} saldo</div>
-      <div class="small">Key: ${r.key}</div>
-      <div style="margin-top:8px"><button class="btn" onclick="prefillBuy('${r.key}')">Pilih</button></div>`;
-      rolesGrid.appendChild(card);
-
-      const opt = document.createElement('option');
-      opt.value = r.key;
-      opt.textContent = `${r.name} — ${r.price_perak.toLocaleString()} saldo`;
-      selectRole.appendChild(opt);
+    roles.forEach(r => {
+      const div = document.createElement("div");
+      div.className = "role";
+      div.innerHTML = `
+        <h3>${r.name}</h3>
+        <p>Harga: ${r.price.toLocaleString()} saldo</p>
+        <button onclick="beliRole('${r.key}')">Beli ${r.name}</button>
+      `;
+      roleList.appendChild(div);
     });
-  }
 
-  async function checkBalance(){
-    const growid = document.getElementById('inputGrowID').value.trim();
-    const growfax = document.getElementById('inputGrowFax').value.trim();
-    if(!growid || !growfax) return alert('Isi GrowID dan GrowFax dulu.');
-    const res = await fetch('/api/check-balance', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({growid, growfax})
-    });
-    const data = await res.json();
-    if(!data.ok) return alert('Gagal cek saldo');
-    CURRENT_ACCOUNT = {growid, growfax, balance: data.balance || 0};
-    document.getElementById('balanceVal').textContent = (data.balance || 0).toLocaleString();
-    document.getElementById('who').textContent = `${growid} / ${growfax}`;
-    document.getElementById('balancePanel').style.display = 'block';
-    document.getElementById('buyPanel').style.display = 'block';
+    async function checkSaldo() {
+      const growid = document.getElementById("growid").value.trim();
+      const growfax = document.getElementById("growfax").value.trim();
+      if (!growid || !growfax)
+        return alert("Isi GrowID dan GrowFax dulu!");
 
-    // populate history
-    const historyArea = document.getElementById('historyArea');
-    let html = '<div><strong>Topups</strong></div>';
-    if(data.topups && data.topups.length){
-      html += '<table><tr><th>Waktu</th><th>Jumlah (IDR)</th><th>Saldo</th></tr>';
-      data.topups.forEach(t => {
-        html += `<tr><td>${t.created_at}</td><td>${(t.amount_idr||0).toLocaleString()}</td><td>${(t.amount_saldo||0).toLocaleString()}</td></tr>`;
-      });
-      html += '</table>';
-    } else { html += '<div class="small">Belum ada topup</div>'; }
-
-    html += '<div style="margin-top:8px"><strong>Orders</strong></div>';
-    if(data.orders && data.orders.length){
-      html += '<table><tr><th>Waktu</th><th>Role</th><th>Harga</th></tr>';
-      data.orders.forEach(o => {
-        html += `<tr><td>${o.created_at}</td><td>${o.role_name}</td><td>${(o.price_perak||0).toLocaleString()}</td></tr>`;
-      });
-      html += '</table>';
-    } else { html += '<div class="small">Belum ada pembelian</div>'; }
-
-    historyArea.innerHTML = html;
-  }
-
-  function prefillBuy(roleKey){
-    selectRole.value = roleKey;
-    window.scrollTo({top:document.getElementById('buyPanel').offsetTop - 20, behavior:'smooth'});
-  }
-
-  async function buyRole(){
-    if(!CURRENT_ACCOUNT) return alert('Cek saldo dulu dengan GrowID & GrowFax.');
-    const role_key = selectRole.value;
-    const res = await fetch('/api/buy', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ growid: CURRENT_ACCOUNT.growid, growfax: CURRENT_ACCOUNT.growfax, role_key })
-    });
-    const data = await res.json();
-    if(!data.ok) {
-      if(data.msg === 'insufficient_balance') {
-        return alert(`Saldo tidak cukup. Saldo: ${data.balance.toLocaleString()}, Butuh: ${data.need.toLocaleString()}`);
+      document.getElementById("saldoDisplay").innerText = "Memeriksa saldo...";
+      try {
+        const res = await fetch("/api/check-balance", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ growid, growfax })
+        });
+        const data = await res.json();
+        if (data.ok)
+          document.getElementById("saldoDisplay").innerText =
+            "Saldo kamu: " + data.balance.toLocaleString() + " saldo";
+        else
+          document.getElementById("saldoDisplay").innerText = "Tidak ada saldo ditemukan.";
+      } catch (err) {
+        document.getElementById("saldoDisplay").innerText = "Gagal mengambil data saldo.";
       }
-      return alert('Gagal beli: ' + (data.msg || JSON.stringify(data)));
     }
-    document.getElementById('buyResult').innerHTML = `<div class="small">Order ID: ${data.order_id} — Sisa saldo: ${data.balance.toLocaleString()}</div>`;
-    // refresh balance and history
-    setTimeout(checkBalance, 600);
-  }
 
-  document.getElementById('btnCheck').addEventListener('click', checkBalance);
-  document.getElementById('btnBuy').addEventListener('click', buyRole);
-  document.getElementById('btnTopUp').addEventListener('click', ()=>{
-    // open Trakteer page or instruct to pay via DANA
-    const trLink = document.getElementById('trakteerLink').href;
-    if(trLink && trLink !== '#'){
-      window.open(trLink, '_blank');
-    } else {
-      alert('Silakan bayarkan via DANA ke nomor: ' + document.getElementById('danaNumber').textContent + '\n\nPastikan pada kolom pesan/komentar donasi menuliskan: GROWID:yourid GROWFAX:yourfax\n\nTrakteer akan meneruskan notifikasi otomatis ke sistem ini.');
+    async function beliRole(roleKey) {
+      const growid = document.getElementById("growid").value.trim();
+      const growfax = document.getElementById("growfax").value.trim();
+      if (!growid || !growfax)
+        return alert("Isi GrowID dan GrowFax dulu!");
+
+      if (!confirm("Yakin ingin membeli role ini?")) return;
+
+      const res = await fetch("/api/buy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ growid, growfax, role_key: roleKey })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        alert("Pembelian berhasil! Sisa saldo: " + data.balance);
+        checkSaldo();
+      } else {
+        alert("Gagal beli: " + (data.msg || "unknown"));
+      }
     }
-  });
-
-  document.getElementById('btnRefresh').addEventListener('click', fetchRoles);
-
-  // init
-  fetchRoles();
-</script>
+  </script>
 </body>
 </html>
+
